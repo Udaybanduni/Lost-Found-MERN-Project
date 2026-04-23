@@ -18,14 +18,14 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/api/login", form);
+      const res = await axios.post(
+        "https://lost-found-mern-project-3ncl.onrender.com/api/login",
+        form
+      );
 
-      // STORE TOKEN
       localStorage.setItem("token", res.data.token);
 
       alert("Login Successful");
-
-      // REDIRECT
       navigate("/dashboard");
 
     } catch (error) {

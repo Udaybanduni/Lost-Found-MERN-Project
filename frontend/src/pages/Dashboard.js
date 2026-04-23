@@ -17,7 +17,6 @@ function Dashboard() {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
 
-  // 🔐 PROTECT ROUTE
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -26,39 +25,12 @@ function Dashboard() {
     }
   }, [navigate]);
 
-  // 📦 FETCH ITEMS
   const fetchItems = async () => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get("http://localhost:5000/api/items", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      setItems(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  // ✍ HANDLE INPUT
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  // 🔍 HANDLE SEARCH
-  const handleSearch = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
       const res = await axios.get(
-        `http://localhost:5000/api/items/search?name=${search}`,
+        "https://lost-found-mern-project-3ncl.onrender.com/api/items",
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -72,7 +44,33 @@ function Dashboard() {
     }
   };
 
-  // ➕ ADD ITEM
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSearch = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        `https://lost-found-mern-project-3ncl.onrender.com/api/items/search?name=${search}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setItems(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -80,7 +78,7 @@ function Dashboard() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "http://localhost:5000/api/items",
+        "https://lost-found-mern-project-3ncl.onrender.com/api/items",
         form,
         {
           headers: {
@@ -107,16 +105,18 @@ function Dashboard() {
     }
   };
 
-  // 🗑 DELETE ITEM
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.delete(`http://localhost:5000/api/items/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      await axios.delete(
+        `https://lost-found-mern-project-3ncl.onrender.com/api/items/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      });
+      );
 
       alert("Item Deleted");
       setItems(items.filter((item) => item._id !== id));
@@ -126,7 +126,6 @@ function Dashboard() {
     }
   };
 
-  // ✏ UPDATE ITEM
   const handleUpdate = async (id) => {
     const newLocation = prompt("Enter new location:");
 
@@ -136,7 +135,7 @@ function Dashboard() {
       const token = localStorage.getItem("token");
 
       await axios.put(
-        `http://localhost:5000/api/items/${id}`,
+        `https://lost-found-mern-project-3ncl.onrender.com/api/items/${id}`,
         { location: newLocation },
         {
           headers: {
@@ -153,7 +152,6 @@ function Dashboard() {
     }
   };
 
-  // 🚪 LOGOUT
   const handleLogout = () => {
     localStorage.removeItem("token");
     alert("Logged out");
@@ -162,8 +160,6 @@ function Dashboard() {
 
   return (
     <div className="container mt-5">
-      
-      {/* HEADER */}
       <div className="d-flex justify-content-between">
         <h2>Dashboard</h2>
         <button className="btn btn-danger" onClick={handleLogout}>
@@ -171,84 +167,33 @@ function Dashboard() {
         </button>
       </div>
 
-      {/* ADD ITEM FORM */}
       <h4 className="mt-3">Add Item</h4>
 
       <form onSubmit={handleSubmit}>
-        <input
-          className="form-control mb-2"
-          name="itemName"
-          placeholder="Item Name"
-          value={form.itemName}
-          onChange={handleChange}
-          required
-        />
+        <input className="form-control mb-2" name="itemName" placeholder="Item Name" value={form.itemName} onChange={handleChange} required />
+        <input className="form-control mb-2" name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
 
-        <input
-          className="form-control mb-2"
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          required
-        />
-
-        <select
-          className="form-control mb-2"
-          name="type"
-          value={form.type}
-          onChange={handleChange}
-        >
+        <select className="form-control mb-2" name="type" value={form.type} onChange={handleChange}>
           <option value="Lost">Lost</option>
           <option value="Found">Found</option>
         </select>
 
-        <input
-          className="form-control mb-2"
-          name="location"
-          placeholder="Location"
-          value={form.location}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          className="form-control mb-2"
-          type="date"
-          name="date"
-          value={form.date}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          className="form-control mb-2"
-          name="contactInfo"
-          placeholder="Contact Info"
-          value={form.contactInfo}
-          onChange={handleChange}
-          required
-        />
+        <input className="form-control mb-2" name="location" placeholder="Location" value={form.location} onChange={handleChange} required />
+        <input className="form-control mb-2" type="date" name="date" value={form.date} onChange={handleChange} required />
+        <input className="form-control mb-2" name="contactInfo" placeholder="Contact Info" value={form.contactInfo} onChange={handleChange} required />
 
         <button className="btn btn-primary">Add Item</button>
       </form>
 
-      {/* SEARCH */}
       <h4 className="mt-4">Search Items</h4>
 
       <div className="d-flex mb-3">
-        <input
-          className="form-control me-2"
-          placeholder="Search by name..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <input className="form-control me-2" placeholder="Search by name..." value={search} onChange={(e) => setSearch(e.target.value)} />
         <button className="btn btn-success" onClick={handleSearch}>
           Search
         </button>
       </div>
 
-      {/* ITEMS LIST */}
       <h4 className="mt-4">All Items</h4>
 
       <ul className="list-group">
@@ -259,17 +204,11 @@ function Dashboard() {
             📍 {item.location} <br />
             📞 {item.contactInfo} <br />
 
-            <button
-              className="btn btn-warning btn-sm me-2 mt-2"
-              onClick={() => handleUpdate(item._id)}
-            >
+            <button className="btn btn-warning btn-sm me-2 mt-2" onClick={() => handleUpdate(item._id)}>
               Update
             </button>
 
-            <button
-              className="btn btn-danger btn-sm mt-2"
-              onClick={() => handleDelete(item._id)}
-            >
+            <button className="btn btn-danger btn-sm mt-2" onClick={() => handleDelete(item._id)}>
               Delete
             </button>
           </li>

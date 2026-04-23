@@ -19,9 +19,14 @@ function Register() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/register", form);
+      await axios.post(
+        "https://lost-found-mern-project-3ncl.onrender.com/api/register",
+        form
+      );
+
       alert("Registration Successful");
       navigate("/login");
+
     } catch (error) {
       alert(error.response?.data?.message || "Error");
     }
